@@ -9,8 +9,8 @@ function Bokehjs.Glyph(glyphtype::Symbol,
                fillcolor::NullString,
                fillalpha::NullFloat,
                size::NullInt,
-               dash::Union(Nothing, Vector{Int64}),
-               fields::Union(Nothing, Dict{Symbol, Symbol}))
+               dash::Union{Void, Vector{Int64}},
+               fields::Union{Void, Dict{Symbol, Symbol}})
     props = @Compat.compat Dict(
         :linecolor => linecolor == nothing ? omit : @Compat.compat(Dict{Symbol, BkAny}(:value => linecolor)),
         :linewidth => linewidth == nothing ? omit : @Compat.compat(Dict{Symbol, BkAny}(:units => :data, :value =>linewidth)),
@@ -57,7 +57,7 @@ end
 
 function Base.show(io::IO, g::Bokehjs.Glyph)
     names = Glyph.names
-    features = String[]
+    features = AbstractString[]
     for name in Glyph.names
         showname = name == :_type_name ? :type : name
         g.(name) != nothing && push!(features, "$showname: $(g.(name))")
@@ -80,8 +80,8 @@ end
 type Plot
     datacolumns::Array{BokehDataSet, 1}
     tools::Vector{Symbol}
-    filename::String
-    title::String
+    filename::AbstractString
+    title::AbstractString
     width::Int
     height::Int
     x_axis_type::NullSymbol
@@ -129,11 +129,11 @@ const CHARTOKENS = @compat Dict(
 
 Base.convert(::Type{Array{Glyph, 1}}, glyph::Glyph) = [glyph]
 
-function Base.convert(::Type{Array{Glyph, 1}}, styles::String)
+function Base.convert(::Type{Array{Glyph, 1}}, styles::AbstractString)
     map(style -> convert(Glyph, style), split(styles, '|'))
 end
 
-function Base.convert(::Type{Glyph}, style::String)
+function Base.convert(::Type{Glyph}, style::AbstractString)
     styd = @compat Dict(:glyphtype=>:Line, :linecolor=>"blue", :linewidth=>1, :linealpha=>1.0)
     for key in keys(STRINGTOKENS)
         splitstyle = split(style, key)
