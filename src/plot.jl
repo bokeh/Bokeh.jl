@@ -4,11 +4,11 @@ else
     using Base.Dates
 end
 
-typealias URange Union(Union(Range, UnitRange))
+typealias URange Union{Union{Range, UnitRange}}
 
-typealias DTArray Union(AbstractMatrix{DateTime}, AbstractMatrix{Date}, AbstractVector{DateTime}, AbstractVector{Date})
+typealias DTArray Union{AbstractMatrix{DateTime}, AbstractMatrix{Date}, AbstractVector{DateTime}, AbstractVector{Date}}
 
-typealias GlyphTypes Union(String, Glyph, Vector{Glyph})
+typealias GlyphTypes Union{AbstractString, Glyph, Vector{Glyph}}
 
 const EPOCH = DateTime(1970, 1, 1)
 
@@ -16,7 +16,7 @@ unixtime(d::Date) = unixtime(convert(DateTime, d))
 
 @compat unixtime(d::DateTime) = Int(d - EPOCH)
 
-getglyphs(styles::String, count::Int64) = getglyphs(convert(Vector{Glyph}, styles), count)
+getglyphs(styles::AbstractString, count::Int64) = getglyphs(convert(Vector{Glyph}, styles), count)
 
 getglyphs(glyph::Glyph, count::Int64) = getglyphs([glyph], count)
 
@@ -96,7 +96,7 @@ function plot(x::RealVect, y::RealVect, args...; kwargs...)
 end
 
 function plot(x::RealMat, y::RealMat, styles::GlyphTypes=DEFAULT_GLYPHS_STR; 
-              legends::Union(Nothing, Vector)=nothing, kwargs...)
+              legends::Union{Void, Vector}=nothing, kwargs...)
     size(x) != size(y) && error("size of x and y are not equal: x: $(size(x)), y: $(size(y))")
     cols = size(x, 2)
     glyphs = getglyphs(styles, cols)
@@ -108,10 +108,10 @@ end
 # there a good if boring reason why we have to use nothing for width, height etc. rather than 
 # set the default to WIDTH, HEIGHT etc.: its because we wouldn't be able to specify a new width 
 # or height on an extending plot if the new value happened to be the same as WIDTH or HEIGHT
-function plot(columns::Array{BokehDataSet, 1}; extend::Union(Nothing, Plot)=nothing,
+function plot(columns::Array{BokehDataSet, 1}; extend::Union{Void, Plot}=nothing,
               title::NullString=nothing, width::NullInt=nothing, height::NullInt=nothing,
               x_axis_type::NullSymbol=nothing, y_axis_type::NullSymbol=nothing, legendsgo::NullSymbol=nothing,
-              plotfile::NullString=nothing, tools::Union(Nothing, Array{Symbol, 1})=nothing, 
+              plotfile::NullString=nothing, tools::Union{Void, Array{Symbol, 1}}=nothing, 
               autoopen::Bool=AUTOOPEN)
     extend == nothing && !HOLD && (global CURPLOT = nothing)
     if extend == nothing && CURPLOT == nothing
